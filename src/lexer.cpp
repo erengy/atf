@@ -28,11 +28,13 @@ SOFTWARE.
 
 namespace atf {
 
+constexpr auto kEOF = nullptr;
+
 void Lexer::Tokenize(const std::string& input) {
   input_ = input;
 
   // We begin by expecting a plain-text token, and continue until the EOF.
-  for (state_function_t state = LexText(); state != nullptr; ) {
+  for (auto state = LexText(); state != kEOF; ) {
     state = state();
   }
 }
@@ -78,7 +80,7 @@ state_function_t Lexer::LexText() {
     // TODO: Return error
   }
 
-  return nullptr;  // EOF
+  return kEOF;
 }
 
 state_function_t Lexer::LexField() {
