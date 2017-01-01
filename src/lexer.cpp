@@ -31,7 +31,11 @@ namespace atf {
 constexpr auto kEOF = nullptr;
 
 void Lexer::Tokenize(const std::string& input) {
+  function_level_ = 0;
   input_ = input;
+  pos_ = 0;
+  start_ = 0;
+  tokens_.clear();
 
   // We begin by expecting a plain-text token, and continue until the EOF.
   for (auto state = LexText(); state != kEOF; ) {
