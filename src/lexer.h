@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2015-2016 Eren Okka
+Copyright (c) 2015-2017 Eren Okka
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,20 +54,20 @@ private:
 // allowed, which is why we use the wrapper class.
 using state_function_t = State::function_t;
 
-enum TokenType {
-  kTokenText,               // Plain text (default type)
-  kTokenFieldBegin,         // "%"
-  kTokenFieldName,          // e.g. "title"
-  kTokenFieldEnd,           // "%"
-  kTokenFunctionSymbol,     // "$"
-  kTokenFunctionName,       // e.g. "if"
-  kTokenFunctionBegin,      // "("
-  kTokenFunctionDelimiter,  // ","
-  kTokenFunctionEnd,        // ")"
-  kTokenRawBegin,           // "'"
-  kTokenRawEnd,             // "'"
-  kTokenConditionBegin,     // "["
-  kTokenConditionEnd,       // "]"
+enum class TokenType {
+  Text,               // Plain text (default type)
+  FieldBegin,         // "%"
+  FieldName,          // e.g. "title"
+  FieldEnd,           // "%"
+  FunctionSymbol,     // "$"
+  FunctionName,       // e.g. "if"
+  FunctionBegin,      // "("
+  FunctionDelimiter,  // ","
+  FunctionEnd,        // ")"
+  RawBegin,           // "'"
+  RawEnd,             // "'"
+  ConditionBegin,     // "["
+  ConditionEnd,       // "]"
 };
 
 struct Token {

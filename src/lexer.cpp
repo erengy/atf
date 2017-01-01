@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2015-2016 Eren Okka
+Copyright (c) 2015-2017 Eren Okka
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,7 @@ state_function_t Lexer::LexText() {
     if (!IsReservedCharacter(c))
       continue;
 
-    AddToken(kTokenText);
+    AddToken(TokenType::Text);
 
     // Since plain-text is the default token type, this is the main branching
     // point of our state machine.
@@ -70,7 +70,7 @@ state_function_t Lexer::LexText() {
     }
   }
 
-  AddToken(kTokenText);
+  AddToken(TokenType::Text);
 
   if (function_level_ != 0) {
     // TODO: Return error
@@ -80,7 +80,7 @@ state_function_t Lexer::LexText() {
 }
 
 state_function_t Lexer::LexField() {
-  AddReservedToken(kTokenFieldBegin);
+  AddReservedToken(TokenType::FieldBegin);
 
   pos_ = input_.find('%', pos_);
 
@@ -88,14 +88,14 @@ state_function_t Lexer::LexField() {
     // TODO: Return error
   }
 
-  AddToken(kTokenFieldName);
-  AddReservedToken(kTokenFieldEnd);
+  AddToken(TokenType::FieldName);
+  AddReservedToken(TokenType::FieldEnd);
 
   return std::bind(&Lexer::LexText, this);
 }
 
 state_function_t Lexer::LexFunctionBegin() {
-  AddReservedToken(kTokenFunctionSymbol);
+  AddReservedToken(TokenType::FunctionSymbol);
 
   pos_ = input_.find('(', pos_);
 
@@ -103,28 +103,28 @@ state_function_t Lexer::LexFunctionBegin() {
     // TODO: Return error
   }
 
-  AddToken(kTokenFunctionName);
-  AddReservedToken(kTokenFunctionBegin);
+  AddToken(TokenType::FunctionName);
+  AddReservedToken(TokenType::FunctionBegin);
   function_level_ += 1;
 
   return std::bind(&Lexer::LexText, this);
 }
 
 state_function_t Lexer::LexFunctionDelimiter() {
-  AddReservedToken(kTokenFunctionDelimiter);
+  AddReservedToken(TokenType::FunctionDelimiter);
 
   return std::bind(&Lexer::LexText, this);
 }
 
 state_function_t Lexer::LexFunctionEnd() {
-  AddReservedToken(kTokenFunctionEnd);
+  AddReservedToken(TokenType::FunctionEnd);
   function_level_ -= 1;
 
   return std::bind(&Lexer::LexText, this);
 }
 
 state_function_t Lexer::LexRaw() {
-  AddReservedToken(kTokenRawBegin);
+  AddReservedToken(TokenType::RawBegin);
 
   pos_ = input_.find('\'', pos_);
 
@@ -133,24 +133,24 @@ state_function_t Lexer::LexRaw() {
   }
 
   if (pos_ > start_) {
-    AddToken(kTokenText);
+    AddToken(TokenType::Text);
   } else {
     // This is a special case where "''" is evaluated to "'"
-    AddToken(kTokenText, "'");
+    AddToken(TokenType::Text, "'");
   }
-  AddReservedToken(kTokenRawEnd);
+  AddReservedToken(TokenType::RawEnd);
 
   return std::bind(&Lexer::LexText, this);
 }
 
 state_function_t Lexer::LexConditionBegin() {
-  AddReservedToken(kTokenConditionBegin);
+  AddReservedToken(TokenType::ConditionBegin);
 
   return std::bind(&Lexer::LexText, this);
 }
 
 state_function_t Lexer::LexConditionEnd() {
-  AddReservedToken(kTokenConditionEnd);
+  AddReservedToken(TokenType::ConditionEnd);
 
   return std::bind(&Lexer::LexText, this);
 }
