@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <limits>
+
 #include "lexer.h"
 
 namespace atf {
@@ -105,7 +107,12 @@ state_function_t Lexer::LexFunctionBegin() {
 
   AddToken(TokenType::FunctionName);
   AddReservedToken(TokenType::FunctionBegin);
-  function_level_ += 1;
+
+  if (function_level_ < std::numeric_limits<decltype(function_level_)>::max()) {
+    function_level_ += 1;
+  } else {
+    // TODO: Return error
+  }
 
   return std::bind(&Lexer::LexText, this);
 }

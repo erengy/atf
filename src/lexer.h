@@ -24,6 +24,7 @@ SOFTWARE.
 
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <string>
 #include <vector>
@@ -99,7 +100,7 @@ private:
   void AddReservedToken(const TokenType type);
   bool IsReservedCharacter(const char c) const;
 
-  unsigned short function_level_ = 0;
+  uint8_t function_level_ = 0;
   std::string input_;
   size_t pos_ = 0;
   size_t start_ = 0;
