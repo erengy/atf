@@ -57,20 +57,13 @@ state_function_t Lexer::LexText() {
     // Since plain-text is the default token type, this is the main branching
     // point of our state machine.
     switch (c) {
-      case '%':
-        return std::bind(&Lexer::LexField, this);
-      case '$':
-        return std::bind(&Lexer::LexFunctionBegin, this);
-      case ',':
-        return std::bind(&Lexer::LexFunctionDelimiter, this);
-      case ')':
-        return std::bind(&Lexer::LexFunctionEnd, this);
-      case '\'':
-        return std::bind(&Lexer::LexRaw, this);
-      case '[':
-        return std::bind(&Lexer::LexConditionBegin, this);
-      case ']':
-        return std::bind(&Lexer::LexConditionEnd, this);
+      case '%':  return LexField();
+      case '$':  return LexFunctionBegin();
+      case ',':  return LexFunctionDelimiter();
+      case ')':  return LexFunctionEnd();
+      case '\'': return LexRaw();
+      case '[':  return LexConditionBegin();
+      case ']':  return LexConditionEnd();
     }
   }
 
@@ -95,7 +88,7 @@ state_function_t Lexer::LexField() {
   AddToken(TokenType::FieldName);
   AddReservedToken(TokenType::FieldEnd);
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 state_function_t Lexer::LexFunctionBegin() {
@@ -116,20 +109,20 @@ state_function_t Lexer::LexFunctionBegin() {
     // TODO: Return error
   }
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 state_function_t Lexer::LexFunctionDelimiter() {
   AddReservedToken(TokenType::FunctionDelimiter);
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 state_function_t Lexer::LexFunctionEnd() {
   AddReservedToken(TokenType::FunctionEnd);
   function_level_ -= 1;
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 state_function_t Lexer::LexRaw() {
@@ -149,19 +142,19 @@ state_function_t Lexer::LexRaw() {
   }
   AddReservedToken(TokenType::RawEnd);
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 state_function_t Lexer::LexConditionBegin() {
   AddReservedToken(TokenType::ConditionBegin);
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 state_function_t Lexer::LexConditionEnd() {
   AddReservedToken(TokenType::ConditionEnd);
 
-  return std::bind(&Lexer::LexText, this);
+  return LexText();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
